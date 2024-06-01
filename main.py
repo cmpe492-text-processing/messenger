@@ -1,7 +1,23 @@
 import os
+import time
+
 from dotenv import load_dotenv
 import database
 from twilio.rest import Client
+
+
+def get_time_remaining() -> str:
+    epoch = 1717657200
+    current = int(time.time())
+    remaining = epoch - current
+
+    days = remaining // (24 * 3600)
+    remaining = remaining % (24 * 3600)
+    hours = remaining // 3600
+    remaining %= 3600
+    minutes = remaining // 60
+
+    return f'{days} days {hours} hours {minutes} minutes'
 
 
 def get_body() -> str:
@@ -16,7 +32,8 @@ def get_body() -> str:
         platform_counts.update({platform: platform_counts.get(platform, 0) + 1})
 
     b = '*' + str(count) + '*\n\n'
-    b += '*Latest 100 subreddits:*\n\n'
+    b += '*Remaining Time:* ' + get_time_remaining() + '\n\n'
+    b += '*Latest 100 Subreddits:*\n\n'
 
     platform_counts = {k: v for k, v in sorted(platform_counts.items(), key=lambda item: item[1], reverse=True)}
     for platform, count in platform_counts.items():
