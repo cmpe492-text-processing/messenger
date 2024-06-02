@@ -22,7 +22,7 @@ def get_time_remaining() -> str:
 
 def get_body() -> str:
     db = database.DatabaseManager()
-    count = db.get_corpus_count()
+    total_count = db.get_corpus_count()
     latest = db.get_latest_100_platforms()
     db.close_connection()
 
@@ -31,7 +31,7 @@ def get_body() -> str:
         platform = platform.split('/', 1)[1]
         platform_counts.update({platform: platform_counts.get(platform, 0) + 1})
 
-    b = '*' + str(count) + '*\n\n'
+    b = '*' + str(total_count) + '*\n\n'
     b += '*Remaining Time:* ' + get_time_remaining() + '\n\n'
     b += '*Latest 100 Subreddits:*\n\n'
 
@@ -40,6 +40,8 @@ def get_body() -> str:
         b += f'- {platform}: {count}\n'
 
     b += '\n'
+
+    b = f"Your appointment is coming up on {total_count}"
     return b
 
 
