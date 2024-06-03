@@ -23,6 +23,8 @@ def get_time_remaining() -> str:
 def get_body() -> str:
     db = database.DatabaseManager()
     total_count = db.get_corpus_count()
+    total_entity_count = db.get_entity_count()
+    total_entity_count_unique = db.get_entity_count_unique()
     latest = db.get_latest_100_platforms()
     db.close_connection()
 
@@ -41,7 +43,7 @@ def get_body() -> str:
 
     b += '\n'
 
-    b = f"Your appointment is coming up on {total_count}"
+    b = f"Your appointment is coming up on {total_count},{total_entity_count},{total_entity_count_unique}"
     return b
 
 

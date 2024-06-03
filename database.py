@@ -46,6 +46,36 @@ class DatabaseManager:
             except OperationalError as e:
                 print(f"The error '{e}' occurred")
 
+    def get_entity_count(self):
+        # get the unique count of wiki_ids in the corpuses table
+        # row -> data (column) -> entities (key) (type: list of objects) -> wiki_id (key) (type: int)
+        if self.connection is not None:
+            cursor = self.connection.cursor()
+            try:
+                cursor.execute("""
+                    SELECT COUNT(entities->>'wiki_id')
+                    FROM corpuses, jsonb_array_elements(data->'entities') AS entities;
+                """)
+                count = cursor.fetchone()
+                return count[0]
+            except OperationalError as e:
+                print(f"The error '{e}' occurred")
+
+    def get_entity_count_unique(self):
+        # get the unique count of wiki_ids in the corpuses table
+        # row -> data (column) -> entities (key) (type: list of objects) -> wiki_id (key) (type: int)
+        if self.connection is not None:
+            cursor = self.connection.cursor()
+            try:
+                cursor.execute("""
+                    SELECT COUNT(DISTINCT entities->>'wiki_id')
+                    FROM corpuses, jsonb_array_elements(data->'entities') AS entities;
+                """)
+                count = cursor.fetchone()
+                return count[0]
+            except OperationalError as e:
+                print(f"The error '{e}' occurred")
+
     def get_latest_100_platforms(self):
         if self.connection is not None:
             cursor = self.connection.cursor()
